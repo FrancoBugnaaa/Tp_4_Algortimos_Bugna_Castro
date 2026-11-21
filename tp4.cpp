@@ -80,12 +80,77 @@ int indiceDe(const GrafoCiudades& g, const string& ciudad) {
 }
 
 // ================================================================
+//                  FUNCIONES AUXILIARES
+// ================================================================
+
+void dfs(const GrafoCiudades& g, string ciudad, vector<bool>& visitado, vector<string>& componente) {
+
+    int i = indiceDe(g, ciudad);
+    visitado[i] = true;
+
+    componente.push_back(ciudad);
+
+    vector<string> vecinos = g.get_neighbors(ciudad);
+
+    for (int j = 0; j < (int)vecinos.size(); j++) {
+
+        int indiceVecino = indiceDe(g, vecinos[j]);
+
+        if (!visitado[indiceVecino]) {
+            dfs(g, vecinos[j], visitado, componente);
+        }
+    }
+}
+
+// ================================================================
 //                  EJERCICIO 1: COMPONENTES CONEXAS
 // ================================================================
 
 vector<vector<string>> componentesConexas(const GrafoCiudades& g) {
-    // TODO: implementar
-    return {};
+    
+    vector<string>ciudades = g.get_vertices();
+    vector<vector<string>> componentes;
+
+    size_t n = ciudades.size();
+    vector<bool> visitado(n, false);
+    int cantidad_componentes = 0;
+    vector<string> Componente_Mayor;
+
+    for(int i = 0; i < n;i++){
+        if(!visitado[i]){
+            vector<string> componente;
+            dfs(g,ciudades[i],visitado,componente);
+            componentes.push_back(componente);
+            cantidad_componentes++;
+            if(componente.size()> Componente_Mayor.size()){
+                Componente_Mayor = componente;
+            }
+        }
+    }
+    cout << "Cantidad de componentes: "
+         << cantidad_componentes << endl;
+
+    cout << "Tamaño de la componente mayor: "
+         << Componente_Mayor.size() << endl;
+
+    cout << "Ciudades fuera de la componente mayor:" << endl;
+
+    for (int i = 0; i < (int)ciudades.size(); i++) {
+
+        bool pertenece = false;
+
+        for (int j = 0; j < (int)Componente_Mayor.size(); j++) {
+            if (ciudades[i] == Componente_Mayor[j]) {
+                pertenece = true;
+                break;
+            }
+        }
+
+        if (!pertenece) {
+            cout << ciudades[i] << endl;
+        }
+    }
+    return componentes;
 }
 
 // ================================================================
