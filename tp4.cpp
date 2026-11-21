@@ -191,8 +191,21 @@ vector<vector<int>> distanciasTodosConTodos(const GrafoCiudades& g) {
 // ================================================================
 
 int contarTriangulos(const GrafoCiudades& g) {
-    // TODO: implementar
-    return 0;
+    vector<string> ciudades = g.get_vertices();
+    int n = ciudades.size();
+
+    int cantidad_triangulos = 0;
+
+    for (int i = 0; i < n; i++){
+        for(int j = i+1; j < n; j++){
+            for(int k = j+1; k < n; k++){
+                if(g.edge_exists(ciudades[i],ciudades[j]) && g.edge_exists(ciudades[j],ciudades[k]) && g.edge_exists(ciudades[k],ciudades[i])){
+                    cantidad_triangulos++;
+                }
+            }
+        }
+    }
+    return cantidad_triangulos;
 }
 
 // ================================================================
