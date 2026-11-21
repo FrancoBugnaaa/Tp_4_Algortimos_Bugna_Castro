@@ -162,9 +162,28 @@ const int INFINITO = 1000000000;
 // dist[i][j]: distancia mínima en km entre la ciudad i y la ciudad j, con
 // las ciudades numeradas en el orden de g.get_vertices() (INFINITO si no hay
 // camino).
+
 vector<vector<int>> distanciasTodosConTodos(const GrafoCiudades& g) {
     // TODO: implementar
-    return {};
+
+    vector<string> vertices = g.get_vertices();
+    int tamano_vertices = static_cast<int>(vertices.size());
+
+    unordered_map<string, int> vertice_indice;
+    vertice_indice.reserve(tamano_vertices);
+
+    for (int i = 0, i < tamano_vertices, i++) {
+        vertice_indice[vertices[i]] = i;
+    }
+
+    vector<vector<int>> dist(tamano_vertices, vector<int>(tamano_vertices, INFINITO)); // Inicializamos una matriz (n (Filas) x m (Columnas)) 
+                                                                                       // con todas las casillas con valor INFINITO.
+
+    for (int i = 0, i < tamano_vertices; i++) {
+        dist[i] = Dijkstra(g, i, vertices, vertice_indice);
+    }
+
+    return dist;
 }
 
 // ================================================================
