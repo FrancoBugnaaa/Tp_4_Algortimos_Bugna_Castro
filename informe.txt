@@ -1,0 +1,55 @@
+// Complejidad del ejercicio 2: O((n+m) log n) por el Dijkstra. Sin embargo, dado que aplicamos este algorimto sobre cada uno de los
+vertices del grafo, la comlejidad seria O(n . (n+m) log n). Es decir, la complejidad el Djikstra se multiplica por cada uno de los nodos
+(n representa tamano_vertices y m es la cantidad de aristas)
+
+=======================================================
+EJERCICIO 2: CAMINO MÍNIMO CON PESOS DE TODOS CON TODOS
+=======================================================
+
+1- ¿Qué algoritmo usaron? ¿Qué orden tiene calcular todas las distancias?
+
+El algoritmo que implementamos fue el de Dijkstra dado que, la distancia entre las ciudades (pesos de las aristas del grafo) no es negativa, dicho
+algoritmo funciona correctamente para calcular caminos mínimos con distancias incluidas.
+Por otro lado, el orden de complejidad que tiene calcular todas las distancias es el costo del algoritmo empleado multiplicado por la 
+cantidad de vértices debido a que aplicamos el algoritmo sobre cada uno de ellos, es decir:
+
+                                                        O(n . (n+m) log n)
+
+Considerando:
+
+n = Cantidad de Vértices/Nodos del grafo.
+m = Cantidad de Aristas del grafo.
+
+(n+m) log n = Complejidad propia del algoritmo de Dijkstra.
+
+2- ¿Por qué BFS no alcanza para este problema?
+
+Consideramos que el algoritmo BFS no alcanza para este problema debido a que el mismo calcula caminos mínimos entre dos ciudades 
+en cantidad de aristas, pero no lo hace considerando los pesos de cada una de ellas, por lo tanto, no identifica las distancias mínimas 
+en términos de kilómetros.
+
+3- ¿Cuál es la distancia mínima entre Buenos Aires y La Quiaca? ¿Y entre Buenos Aires y Ushuaia?
+
+Según nuestros resultados obtenidos, planteamos lo siguiente:
+
+La distancia mínima entre Buenos Aires y La Quiaca es de 1943 km.
+
+Por otra parte, la distancia mínima entre Buenos Aires y Ushuaia es de 1000000000 km. Este valor quiere decir que, con el grafo "g" dado por el TP,
+no existe un camino entre Buenos Aires y Ushuaia, y, en esencia, nos indica que ambas ciudades (vértices del grafo) pertenecen a una componente
+conexa distinta (esto se puede confirmar analizando los resultados del ejercicio 1, los cuales indican que Ushuaia se encuentra entre una de las 
+siete ciudades fuera de la componente mayor, en la cual sí se encuentra Buenos Aires).
+
+
+
+===============================
+EJERCICIO 4: DIÁMETRO CON PESOS
+===============================
+
+1- ¿Entre qué dos ciudades se da?
+
+El diámetro del grafo es de 4131 km y se da entre las ciudades de La Quiaca y Veintiocho de Noviembre.
+
+2- ¿Qué hacen con los pares de ciudades que no están conectadas por ningún camino?
+
+Con los pares de ciudades que no están conectadas por ningún camino simplemente las ignoramos ya que representan distancias infinitas (1000000000), 
+las cuales nos indican que no existe camino posible (en el grafo "g") para unir ambas ciudades (vértices).

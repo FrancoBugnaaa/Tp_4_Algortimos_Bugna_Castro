@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <queue>  // Agregamos la librería "queue" para poder utilizar la Cola de Prioridad en la función auxiliar del algoritmo Dijkstra utilizado.
 
 #include "graphClass.h"
 
@@ -102,6 +103,51 @@ void dfs(const GrafoCiudades& g, string ciudad, vector<bool>& visitado, vector<s
     }
 }
 
+vector<int> Dijkstra(const GrafoCiudades& g, const vector<string>& vertices, const unordered_map<string, size_t>& indice_vertice, size_t origen) {
+
+    // Función Auxiliar que aplica el algoritmo de Dijkstra desde un vértice origen hacia todos los demás.
+
+    const int INFINITO = 1000000000;
+
+    size_t n = vertices.size();
+    vector<int> dist(n, INFINITO);
+
+    priority_queue<
+    pair<int, int>,
+    vector<pair<int, int>>,
+    greater<pair<int, int>>
+    > Cola_de_Prioridad;
+
+    dist[origen] = 0;
+    Cola_de_Prioridad.push({0, origen});
+
+    while (Cola_de_Prioridad.empty() == false) {
+
+        int distancia_actual = Cola_de_Prioridad.top().first;
+        int u = Cola_de_Prioridad.top().second;
+
+        Cola_de_Prioridad.pop();
+
+        if (distancia_actual > dist[u]) {
+            continue;
+        }
+
+        for (const string& vecino: g.get_neighbors(vertices[u])) {
+
+            size_t v = indice_vertice.at(vecino);
+            int peso_arista = *g.get_edge_data(vertices[u], vecino);
+            int nueva_distancia = distancia_actual + peso_arista;
+
+            if (nueva_distancia < dist[v]) {
+                dist[v] = nueva_distancia;
+                Cola_de_Prioridad.push({nueva_distancia, v});
+            }
+        }
+    }
+
+    return dist;
+}
+
 // ================================================================
 //                  EJERCICIO 1: COMPONENTES CONEXAS
 // ================================================================
@@ -116,7 +162,7 @@ vector<vector<string>> componentesConexas(const GrafoCiudades& g) {
     int cantidad_componentes = 0;
     vector<string> Componente_Mayor;
 
-    for(int i = 0; i < n;i++){
+    for(size_t i = 0; i < n;i++){
         if(!visitado[i]){
             vector<string> componente;
             dfs(g,ciudades[i],visitado,componente);
@@ -164,23 +210,22 @@ const int INFINITO = 1000000000;
 // camino).
 
 vector<vector<int>> distanciasTodosConTodos(const GrafoCiudades& g) {
+
     // TODO: implementar
 
     vector<string> vertices = g.get_vertices();
-    int tamano_vertices = static_cast<int>(vertices.size());
+    size_t cantidad_vertices = vertices.size();
 
-    unordered_map<string, int> vertice_indice;
-    vertice_indice.reserve(tamano_vertices);
+    vector<vector<int>> dist(cantidad_vertices, vector<int>(cantidad_vertices, INFINITO));
 
-    for (int i = 0, i < tamano_vertices, i++) {
-        vertice_indice[vertices[i]] = i;
+    unordered_map<string,size_t> indice;
+
+    for (size_t i = 0; i < cantidad_vertices; i++) {
+        indice[vertices[i]] = i;
     }
 
-    vector<vector<int>> dist(tamano_vertices, vector<int>(tamano_vertices, INFINITO)); // Inicializamos una matriz (n (Filas) x m (Columnas)) 
-                                                                                       // con todas las casillas con valor INFINITO.
-
-    for (int i = 0, i < tamano_vertices; i++) {
-        dist[i] = Dijkstra(g, i, vertices, vertice_indice);
+    for (size_t i = 0; i < cantidad_vertices; i++) {
+        dist[i] = Dijkstra(g, vertices, indice, i);
     }
 
     return dist;
@@ -192,13 +237,13 @@ vector<vector<int>> distanciasTodosConTodos(const GrafoCiudades& g) {
 
 int contarTriangulos(const GrafoCiudades& g) {
     vector<string> ciudades = g.get_vertices();
-    int n = ciudades.size();
+    size_t n = ciudades.size();
 
     int cantidad_triangulos = 0;
 
-    for (int i = 0; i < n; i++){
-        for(int j = i+1; j < n; j++){
-            for(int k = j+1; k < n; k++){
+    for (size_t i = 0; i < n; i++){
+        for(size_t j = i+1; j < n; j++){
+            for(size_t k = j+1; k < n; k++){
                 if(g.edge_exists(ciudades[i],ciudades[j]) && g.edge_exists(ciudades[j],ciudades[k]) && g.edge_exists(ciudades[k],ciudades[i])){
                     cantidad_triangulos++;
                 }
@@ -221,7 +266,25 @@ public:
 
 Diametro diametro(const GrafoCiudades& g, const vector<vector<int>>& dist) {
     // TODO: implementar
-    return {0, "", ""};
+
+    vector<string> vertices = g.get_vertices();
+    size_t n = vertices.size();
+
+    Diametro resultado = {0, "", ""};
+
+    for (size_t i = 0; i < n; i++) {
+        for (size_t j = i + 1; j < n; j++) {
+
+            if (dist[i][j] != 1000000000 && dist[i][j] > resultado.distancia) {
+
+                resultado.distancia = dist[i][j];
+                resultado.ciudad1 = vertices[i];
+                resultado.ciudad2 = vertices[j];
+            }
+        }
+    }
+
+    return resultado;
 }
 
 // ================================================================
@@ -270,7 +333,40 @@ int main(int argc, char* argv[]) {
 
     cout << "\n=== Ejercicio 2 ===\n";
     vector<vector<int>> dist = distanciasTodosConTodos(g);
+
     // TODO: distancias Buenos Aires - La Quiaca y Buenos Aires - Ushuaia
+
+    vector<string> vertices = g.get_vertices();
+
+    size_t buenos_aires = vertices.size();
+    size_t la_quiaca = vertices.size();
+    size_t ushuaia = vertices.size();
+
+    for (size_t i = 0; i < vertices.size(); i++) {
+
+        if (vertices[i] == "Buenos Aires") {
+            buenos_aires = i;
+        }
+
+        if (vertices[i] == "La Quiaca") {
+            la_quiaca = i;
+        }
+
+        if (vertices[i] == "Ushuaia") {
+            ushuaia = i;
+        }
+    }
+
+    if (buenos_aires < vertices.size() && la_quiaca < vertices.size() && ushuaia < vertices.size()) {
+
+        cout << "Distancia Buenos Aires - La Quiaca: " << dist[buenos_aires][la_quiaca] << " km." << endl;
+
+        cout << "Distancia Buenos Aires - Ushuaia: " << dist[buenos_aires][ushuaia] << " km." << endl;
+    }
+
+    else {
+        cout << "No se han encontrado las ciudades solicitadas." << endl;
+    }
 
     cout << "\n=== Ejercicio 3 ===\n";
     cout << "Triángulos: " << contarTriangulos(g) << "\n";
