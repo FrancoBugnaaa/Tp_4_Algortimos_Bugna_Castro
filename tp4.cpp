@@ -308,8 +308,31 @@ Visitas randomWalksPorDistancia(const GrafoCiudades& g, int cantidad, int largo)
 //                   EJERCICIO 6: ANÁLISIS LIBRE
 // ================================================================
 
-void analisisLibre(const GrafoCiudades& g) {
+void analisisLibre(const GrafoCiudades& g, const vector<vector<int>>& dist) {
     // TODO: implementar
+
+    vector<string> vertices = g.get_vertices();
+    unordered_map<string, size_t> indice_vertice;
+
+    // Primer Análisis: Consultar la distancia mínima entre Buenos Aires y Comodoro Rivadavia.
+    
+    for (size_t i = 0; i < vertices.size(); i++) {
+        indice_vertice[vertices[i]] = i;
+    }
+
+    size_t buenos_aires = indice_vertice.at("Buenos Aires");
+    size_t comodoro_rivadavia = indice_vertice.at("Comodoro Rivadavia");
+
+    if (dist[buenos_aires][comodoro_rivadavia] == 1000000000) {
+        cout << "No existe un camino entre Buenos Aires y Comodoro Rivadavia." << endl;
+    }
+
+    else {
+        cout << "Distancia mínima entre Buenos Aires y Comodoro Rivadavia: " << dist[buenos_aires][comodoro_rivadavia] << " km." << endl;
+    }
+
+    // Segundo Análisis: 
+
     return;
 }
 
@@ -382,7 +405,7 @@ int main(int argc, char* argv[]) {
     // TODO: las 10 ciudades más visitadas en cada caso, y las 10 de mayor grado
 
     cout << "\n=== Ejercicio 6 ===\n";
-    analisisLibre(g);
+    analisisLibre(g, dist);
 
     return 0;
 }
