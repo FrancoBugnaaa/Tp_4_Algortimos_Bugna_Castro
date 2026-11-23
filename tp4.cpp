@@ -295,14 +295,84 @@ Diametro diametro(const GrafoCiudades& g, const vector<vector<int>>& dist) {
 using Visitas = unordered_map<string, int>;
 
 Visitas randomWalks(const GrafoCiudades& g, int cantidad, int largo) {
-    // TODO: implementar
-    return {};
+    Visitas visitas;
+
+    vector<string> ciudades = g.get_vertices();
+
+    if (ciudades.empty()) return visitas;
+
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(0, (int)ciudades.size() - 1);
+
+    for(int i = 0; i < cantidad; i++){
+        
+        string ciudad = ciudades[dist(gen)];
+
+        visitas[ciudad]++;
+
+        for(int j = 0; j < largo; j++){
+            vector <string> vecinos = g.get_neighbors(ciudad);
+
+            if (vecinos.empty()) break;
+
+            uniform_int_distribution<int> distVecino(0, (int)vecinos.size() - 1);
+
+            ciudad = vecinos[distVecino(gen)];
+
+            visitas[ciudad]++;
+        }
+    }
+
+    return visitas;
 }
 
 Visitas randomWalksPorDistancia(const GrafoCiudades& g, int cantidad, int largo) {
-    // TODO: implementar
-    return {};
+    Visitas visitas;
+    vector<string> ciudades = g.get_vertices();
+
+    if (ciudades.empty()) return visitas;
+
+    random_device rd;
+    mt19937 gen(rd());
+
+    uniform_int_distribution<int> dist(0, (int)ciudades.size() - 1);
+
+    for (int i = 0; i < cantidad; i++) {
+
+        string ciudad = ciudades[dist(gen)];
+
+        visitas[ciudad]++;
+
+        for (int j = 0; j < largo; j++) {
+
+            vector<string> vecinos = g.get_neighbors(ciudad);
+
+            if (vecinos.empty()) break;
+
+            vector<double> pesos;
+
+            for (int k = 0; k < (int)vecinos.size(); k++) {
+
+                int distancia = g.get_edge_data(ciudad, vecinos[k]).value();
+
+                double peso = 1.0 / distancia;
+
+                pesos.push_back(peso);
+            }
+
+            discrete_distribution<int> distVecino(pesos.begin(), pesos.end());
+
+            ciudad = vecinos[distVecino(gen)];
+
+            visitas[ciudad]++;
+        }
+    }
+
+    return visitas;
 }
+
+
 
 // ================================================================
 //                   EJERCICIO 6: ANÁLISIS LIBRE
