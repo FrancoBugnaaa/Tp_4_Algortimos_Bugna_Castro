@@ -173,7 +173,7 @@ vector<vector<string>> obtenerComponentesConexas(const GrafoCiudades& g) {
 
 }
 
-//
+// Función auxiliar utilizada en el ejercicio 6 (análisis 5) para determinar el camino más corto en términos de aristas entre dos ciudades.
 
 vector<string> caminoBFS (const GrafoCiudades& g, const string& origen, const string& destino) {
 
@@ -228,7 +228,8 @@ vector<string> caminoBFS (const GrafoCiudades& g, const string& origen, const st
 
 vector<string> caminoDijkstra(const GrafoCiudades& g, const vector<string>& vertices, const unordered_map<string, size_t>& indice_vertice, size_t origen, size_t destino) {
 
-    // 
+    // Función auxiliar utilizada en el ejercicio 6 (análisis 5) para determinar el camino más corto
+    // en términos de pesos de aristas entre dos ciudades.
 
     const int INFINITO = 1000000000;
 
