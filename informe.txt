@@ -1,7 +1,3 @@
-// Complejidad del ejercicio 2: O((n+m) log n) por el Dijkstra. Sin embargo, dado que aplicamos este algorimto sobre cada uno de los
-vertices del grafo, la comlejidad seria O(n . (n+m) log n). Es decir, la complejidad el Djikstra se multiplica por cada uno de los nodos
-(n representa tamano_vertices y m es la cantidad de aristas)
-
 =======================================================
 EJERCICIO 2: CAMINO MÍNIMO CON PESOS DE TODOS CON TODOS
 =======================================================
@@ -53,3 +49,73 @@ El diámetro del grafo es de 4131 km y se da entre las ciudades de La Quiaca y V
 
 Con los pares de ciudades que no están conectadas por ningún camino simplemente las ignoramos ya que representan distancias infinitas (1000000000), 
 las cuales nos indican que no existe camino posible (en el grafo "g") para unir ambas ciudades (vértices).
+
+
+============================
+EJERCICIO 6: ANÁLISIS LIBRE
+============================
+
+En este ejercicio llevamos a cabo diversos análisis sobre el grafo que nos parecían interesantes:
+
+1- Consultar la distancia mínima entre Buenos Aires y Comdoro Rivadavia:
+
+Calculamos la distancia mínima entre las ciudades de Buenos Aires y Comdoro Rivadavia (ciudad natal de Thiago) y obtuvimos un resultado de 1783 km.
+
+2- Determinar cuáles son las ciudades que pertenecen a cada componente conexa del grafo:
+
+Obtuvimos cada componente conexa del grafo mediante la función implementada "obtenerComponentesConexas(g)" y recorrimos cada uno de los vértices
+propios de cada componente para poder mostrarlos de forma ordenada e identificar cómo están distribuidas las ciudades. 
+
+3 - Calcular la cantidad mínima de aristas necesarias para que el grafo sea conexo:
+
+Dado que anteriormente habíamos obtenido que el grafo tiene cuatro componentes conexas, queríamos conocer cuál era la cantidad mínima de
+aristas que se necesitaban agregar para formar un único grafo conexo. Para ello, nos basamos en una propiedad fundamental que tienen los grafos:
+
+. Si un grafo tiene k componentes conexas, se necesitan, como mínimo, k - 1 aristas para convertirlo en un grafo conexo.
+
+Por lo tanto, utilizamos nuestra función implementada (mencionada anteriormente) que nos devolvía la cantidad de componentes conexas del grafo, y
+luego le restamos 1 a dicho resultado, obteniendo, de esta manera, un resultado de 3 aristas necesarias para que el grafo sea conexo.
+
+4 - Calcular la ciudad más aislada y la ciudad más conectada:
+
+Nos pareció interesante conocer cuál de todas las ciudades del grafo era la más aislada y cuál la más conectada.
+Por este motivo, definimos los dos conceptos de la siguiente manera:
+
+. Ciudad más aislada: Definimos como "Ciudad más aislada" al vértice del grafo cuyo grado era el menor de todos.
+. Ciudad más conectada: Definimos como "Ciudad más conectada" al vértice del grafo cuyo grado era el mayor de todos.
+
+Para ello, recorremos todas las ciudades del grafo y empezamos definiendo como la de mayor grado a la primera que analizamos. Luego, analizamos todos
+sus vecinos junto a sus grados y, si alguno de estos es menor o mayor al definido anteriormente, lo declaramos como el grado más bajo o alto 
+respectivamente y guardamos el nombre de la ciudad (vértice) al que corresponde.
+
+5 - Comparar el camino con menos rutas (BFS) con el camino más corto en km entre dos ciudades lejas:
+
+Finalmente, queríamos comprobar si el camino más corto en términos de aristas también representaba el camino con menor cantidad de 
+kilómetros recorridos.
+
+Para esto, elegimos nuevamente, como término de comparación, las ciudades de Buenos Aires y Comodoro Rivadavia.
+
+Además, utilizamos dos algoritmos trabajados en las clases, los cuales son:
+
+BFS: Nos permitió encontrar un camino con la menor cantidad de aristas atravesadas entre ambas ciudades, sin considerar los pesos (km) de cada arista.
+
+Algortimo de Dijkstra: Nos permitió encontrar un camino cuya suma de los pesos de las aristas atravesadas era la menor posible.
+
+Para concluir, obtuvimos los siguientes resultados: 
+
+Cantidad de rutas (BFS) entre Buenos Aires y Comodoro Rivadavia: 9
+Cantidad de rutas (Dijkstra) entre Buenos Aires y Comodoro Rivadavia: 9
+
+Distancia Total (BFS) entre Buenos Aires y Comodoro Rivadavia: 2079 km.
+
+Camino encontrado por BFS: 
+Buenos Aires -> La Plata -> Dolores -> Tandil -> Tres Arroyos -> Bahía Blanca -> Carmen de Patagones -> San Antonio Oeste -> Gaiman -> Comodoro Rivadavia
+
+Distancia Total (Dijkstra) entre Buenos Aires y Comodoro Rivadavia: 1783 km.
+
+Camino encontrado por Dijsktra: 
+Buenos Aires -> Ezeiza -> Las Flores -> Olavarría -> Coronel Pringles -> Punta Alta -> Carmen de Patagones -> Puerto Madryn -> Gaiman -> Comodoro Rivadavia
+
+Es decir, a pesar de que ambos encontraron la misma cantidad de rutas mínimas, nuestro algoritmo de Dijkstra encontró un camino ahorrándose
+296 kilómetros de diferencia e, indicándonos, que, a pesar de que BFS encuentra la ruta más rápida en cuanto a cantidad de aristas, ello no
+implica ser la ruta con menor cantidad de kilómetros recorridos.

@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <queue>  // Agregamos la librería "queue" para poder utilizar la Cola de Prioridad en la función auxiliar del algoritmo Dijkstra utilizado.
+#include <algorithm> // Agregamos la librería "algorithm" para poder utilizar el método "reverse()" en la función auxiliar "caminoBFS" implmentada para el quinto análisis del ejercicio 6.
 
 #include "graphClass.h"
 
@@ -146,6 +147,150 @@ vector<int> Dijkstra(const GrafoCiudades& g, const vector<string>& vertices, con
     }
 
     return dist;
+
+}
+
+vector<vector<string>> obtenerComponentesConexas(const GrafoCiudades& g) {
+
+    // Función Auxiliar utilizada para el segundo análisis del ejercicio 6 (Similar a la función del ejercicio 1 (Contar Componentes Conexas)) pero
+    // sin su análisis específico para dicho ejercicio.
+    
+    vector<string>ciudades = g.get_vertices();
+    vector<vector<string>> componentes;
+
+    size_t n = ciudades.size();
+    vector<bool> visitado(n, false);
+
+    for(size_t i = 0; i < n;i++){
+        if(!visitado[i]){
+            vector<string> componente;
+            dfs(g,ciudades[i],visitado,componente);
+            componentes.push_back(componente);
+            }
+        }
+
+    return componentes;
+
+}
+
+//
+
+vector<string> caminoBFS (const GrafoCiudades& g, const string& origen, const string& destino) {
+
+    queue<string> pendientes_por_visitar;
+
+    unordered_map<string, bool> visitados;
+    unordered_map<string, string> padre;
+
+    visitados[origen] = true;
+
+    pendientes_por_visitar.push(origen);
+
+    while (pendientes_por_visitar.empty() == false) {
+        string actual = pendientes_por_visitar.front();
+        pendientes_por_visitar.pop();
+
+        if (actual == destino) {
+            break;
+        }
+
+        vector<string> vecinos = g.get_neighbors(actual);
+
+        for (const string& vecino : vecinos) {
+            if (visitados[vecino] == false) {
+
+                visitados[vecino] = true;
+                padre[vecino] = actual;
+
+                pendientes_por_visitar.push(vecino);
+            }
+        }
+    }
+
+    if (visitados[destino] == false) {
+      return {};
+    }
+
+    vector<string> camino;
+    string actual = destino;
+
+    while (actual != origen) {
+        camino.push_back(actual);
+        actual = padre.at(actual);
+    }
+
+    camino.push_back(origen);
+
+    reverse(camino.begin(), camino.end());
+
+    return camino;
+}
+
+vector<string> caminoDijkstra(const GrafoCiudades& g, const vector<string>& vertices, const unordered_map<string, size_t>& indice_vertice, size_t origen, size_t destino) {
+
+    // 
+
+    const int INFINITO = 1000000000;
+
+    size_t n = vertices.size();
+    vector<int> dist(n, INFINITO);
+    vector<size_t> padre(n, n);
+
+    priority_queue<
+    pair<int, int>,
+    vector<pair<int, int>>,
+    greater<pair<int, int>>
+    > Cola_de_Prioridad;
+
+    dist[origen] = 0;
+    Cola_de_Prioridad.push({0, origen});
+
+    while (Cola_de_Prioridad.empty() == false) {
+
+        int distancia_actual = Cola_de_Prioridad.top().first;
+        size_t u = Cola_de_Prioridad.top().second;
+
+        Cola_de_Prioridad.pop();
+
+        if (distancia_actual > dist[u]) {
+            continue;
+        }
+
+        if (u == destino) {
+            break;
+        }
+
+        for (const string& vecino: g.get_neighbors(vertices[u])) {
+
+            size_t v = indice_vertice.at(vecino);
+            int peso_arista = *g.get_edge_data(vertices[u], vecino);
+            int nueva_distancia = distancia_actual + peso_arista;
+
+            if (nueva_distancia < dist[v]) {
+                dist[v] = nueva_distancia;
+                padre[v] = u;
+                Cola_de_Prioridad.push({nueva_distancia, v});
+            }
+        }
+    }
+
+    if (dist[destino] == INFINITO) {
+        return {};
+    }
+
+    vector<string> camino;
+    size_t actual = destino;
+
+    while (actual != origen) {
+        camino.push_back(vertices[actual]);
+        actual = padre[actual];
+    }
+
+    camino.push_back(vertices[origen]);
+
+    reverse(camino.begin(), camino.end()); // Invertimos el orden para obtener el formato: origen -> destino.
+
+    return camino;
 }
 
 // ================================================================
@@ -295,6 +440,9 @@ Diametro diametro(const GrafoCiudades& g, const vector<vector<int>>& dist) {
 using Visitas = unordered_map<string, int>;
 
 Visitas randomWalks(const GrafoCiudades& g, int cantidad, int largo) {
+
+    // TODO: implementar
+
     Visitas visitas;
 
     vector<string> ciudades = g.get_vertices();
@@ -328,6 +476,9 @@ Visitas randomWalks(const GrafoCiudades& g, int cantidad, int largo) {
 }
 
 Visitas randomWalksPorDistancia(const GrafoCiudades& g, int cantidad, int largo) {
+
+    // TODO: implementar
+
     Visitas visitas;
     vector<string> ciudades = g.get_vertices();
 
@@ -372,13 +523,12 @@ Visitas randomWalksPorDistancia(const GrafoCiudades& g, int cantidad, int largo)
     return visitas;
 }
 
-
-
 // ================================================================
 //                   EJERCICIO 6: ANÁLISIS LIBRE
 // ================================================================
 
 void analisisLibre(const GrafoCiudades& g, const vector<vector<int>>& dist) {
+
     // TODO: implementar
 
     vector<string> vertices = g.get_vertices();
@@ -398,13 +548,168 @@ void analisisLibre(const GrafoCiudades& g, const vector<vector<int>>& dist) {
     }
 
     else {
+
         cout << "Distancia mínima entre Buenos Aires y Comodoro Rivadavia: " << dist[buenos_aires][comodoro_rivadavia] << " km." << endl;
+        cout << endl;
     }
 
-    // Segundo Análisis: 
+    // Segundo Análisis: Determinar cuáles son las ciudades que pertenecen a cada componente conexa del grafo.
+
+    vector<vector<string>> componentes = obtenerComponentesConexas(g);
+
+        cout << "Componentes Conexas" << endl;
+        cout << "===================" << endl;
+
+        cout << endl;
+
+        for (size_t i = 0; i < componentes.size(); i++) {
+            cout << "Componente Conexa " << i + 1 << ":" << endl;
+
+            for (const string& ciudad : componentes[i]) {
+                cout << ciudad << endl;
+            }
+
+            cout << endl;
+        }
+
+    // Tercer Análisis: Calcular la cantidad mínima de aristas necesaria para que el grafo sea conexo.
+
+    size_t cantidad_de_aristas = componentes.size() - 1;
+
+    cout <<"Cantidad mínima de aristas para que el grafo sea conexo: " << cantidad_de_aristas << endl;
+
+    cout << endl;
+
+    // Cuarto Análisis: Calcular la ciudad más aislada (menor cantidad de vecinos) y la ciudad más conectada (mayor cantidad de vecinos).
+
+    string ciudad_mas_aislada = vertices[0];
+    size_t menor_grado =  g.get_neighbors(vertices[0]).size();
+
+    for (const string& ciudad : vertices) {
+        size_t grado = g.get_neighbors(ciudad).size();
+
+        if (grado < menor_grado) {
+            menor_grado = grado;
+            ciudad_mas_aislada = ciudad;
+        }
+    }
+
+    cout << "Ciudad más aislada: " << ciudad_mas_aislada << endl;
+    cout << "Grado de " << ciudad_mas_aislada << ": " << menor_grado << endl;
+
+    cout << endl;
+
+    string ciudad_mas_conectada = vertices[0];
+    size_t mayor_grado =  g.get_neighbors(vertices[0]).size();
+
+    for (const string& ciudad : vertices) {
+        size_t grado = g.get_neighbors(ciudad).size();
+
+        if (grado > mayor_grado) {
+            mayor_grado = grado;
+            ciudad_mas_conectada = ciudad;
+        }
+    }
+
+    cout << "Ciudad más conectada: " << ciudad_mas_conectada << endl;
+    cout << "Grado de " << ciudad_mas_conectada << ": " << mayor_grado << endl;
+
+    cout << endl;
+
+    // Quinto Análisis: Comparar el camino con menos rutas (BFS) con el camino más corto en km entre dos ciudades lejanas.
+
+    vector<string> camino_con_BFS = caminoBFS(g, "Buenos Aires", "Comodoro Rivadavia");
+    vector<string> camino_con_Dijkstra = caminoDijkstra(g, vertices, indice_vertice, indice_vertice.at("Buenos Aires"), indice_vertice.at("Comodoro Rivadavia"));
+
+    size_t cantidad_aristas_bfs = camino_con_BFS.size() - 1;
+    size_t cantidad_aristas_dijkstra = camino_con_Dijkstra.size() - 1;
+
+    int distancia_BFS = 0;
+
+    for (size_t i = 0; i + 1 < camino_con_BFS.size(); i++) {
+
+        const string ciudad_1 = camino_con_BFS[i];
+        const string ciudad_2 = camino_con_BFS[i + 1];
+
+        if (g.edge_exists(ciudad_1, ciudad_2) == false) {
+            cout << "No se ha encotrado la arista entre " << ciudad_1 << " y " << ciudad_2 << endl;
+            continue;
+        }
+
+        auto peso = g.get_edge_data(ciudad_1, ciudad_2);
+
+        if (peso.has_value() == false) {
+            cout << "La arista existe pero no tiene un peso asociado"  << endl;
+            continue;
+        }
+
+        distancia_BFS += peso.value();
+    }
+
+    int distancia_Dijkstra = 0;
+
+    for (size_t i = 0; i + 1 < camino_con_Dijkstra.size(); i++) {
+
+        const string& ciudad_1 = camino_con_Dijkstra[i];
+        const string& ciudad_2 = camino_con_Dijkstra[i + 1];
+
+        if (g.edge_exists(ciudad_1, ciudad_2) == false) {
+            cout << "No se ha encotrado la arista entre " << ciudad_1 << " y " << ciudad_2 << endl;
+            continue;
+        }
+
+        auto peso = g.get_edge_data(ciudad_1, ciudad_2);
+
+        if (peso.has_value() == false) {
+            cout << "La arista existe pero no tiene un peso asociado"  << endl;
+            continue;
+        }
+
+        distancia_Dijkstra += peso.value();
+    }
+
+    cout << "Comparación de caminos" << endl;
+    cout << "======================" << endl;
+
+    cout << endl;
+
+    cout << "Cantidad de rutas (BFS) entre Buenos Aires y Comodoro Rivadavia: " << cantidad_aristas_bfs << endl;
+    cout << "Cantidad de rutas (Dijkstra) entre Buenos Aires y Comodoro Rivadavia: " << cantidad_aristas_dijkstra << endl;
+
+    cout << endl;
+
+    cout << "Distancia Total (BFS) entre Buenos Aires y Comodoro Rivadavia: " << distancia_BFS << " km." << endl;
+    cout << endl;
+    cout << "Camino encontrado por BFS: " << endl;
+
+    for (size_t i = 0; i < camino_con_BFS.size(); i++) {
+        cout << camino_con_BFS[i];
+
+        if (i + 1 < camino_con_BFS.size()) {
+            cout << " -> ";
+        }
+    }
+
+    cout << endl;
+    cout << endl;
+
+    cout << "Distancia Total (Dijkstra) entre Buenos Aires y Comodoro Rivadavia: " << distancia_Dijkstra << " km." << endl;
+    cout << endl;
+    cout << "Camino encontrado por Dijsktra: " << endl;
+
+    for (size_t i = 0; i < camino_con_Dijkstra.size(); i++) {
+        cout << camino_con_Dijkstra[i];
+
+        if (i + 1 < camino_con_Dijkstra.size()) {
+            cout << " -> ";
+        }
+    }
+
+    cout << endl;
 
     return;
 }
+
 
 // ================================================================
 //                              MAIN
