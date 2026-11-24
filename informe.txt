@@ -1,4 +1,8 @@
 =======================================================
+EJERCICIO 1: COMPONENTES CONEXAS
+=======================================================
+
+=======================================================
 EJERCICIO 2: CAMINO MÍNIMO CON PESOS DE TODOS CON TODOS
 =======================================================
 
@@ -35,7 +39,9 @@ no existe un camino entre Buenos Aires y Ushuaia, y, en esencia, nos indica que 
 conexa distinta (esto se puede confirmar analizando los resultados del ejercicio 1, los cuales indican que Ushuaia se encuentra entre una de las 
 siete ciudades fuera de la componente mayor, en la cual sí se encuentra Buenos Aires).
 
-
+=======================================================
+EJERCICIO 3: TRIANGULOS
+=======================================================
 
 ===============================
 EJERCICIO 4: DIÁMETRO CON PESOS
@@ -50,6 +56,9 @@ El diámetro del grafo es de 4131 km y se da entre las ciudades de La Quiaca y V
 Con los pares de ciudades que no están conectadas por ningún camino simplemente las ignoramos ya que representan distancias infinitas (1000000000), 
 las cuales nos indican que no existe camino posible (en el grafo "g") para unir ambas ciudades (vértices).
 
+=======================================================
+EJERCICIO 5: RANDOM WALKS Y LA CIUDAD MÁS CENTRAL
+=======================================================
 
 ============================
 EJERCICIO 6: ANÁLISIS LIBRE

@@ -711,6 +711,23 @@ void analisisLibre(const GrafoCiudades& g, const vector<vector<int>>& dist) {
     return;
 }
 
+void mostrarTop10(vector<pair<string, int>> ranking) {
+
+    sort(ranking.begin(), ranking.end(),
+        [](const pair<string, int>& a, const pair<string, int>& b) {
+            return a.second > b.second;
+        });
+
+    int limite = min(10, (int)ranking.size());
+
+    for (int i = 0; i < limite; i++) {
+
+        cout << i + 1 << ". "
+             << ranking[i].first
+             << ": " << ranking[i].second
+             << endl;
+    }
+}
 
 // ================================================================
 //                              MAIN
@@ -728,7 +745,6 @@ int main(int argc, char* argv[]) {
     cout << "=== Ejercicio 1 ===\n";
     vector<vector<string>> componentes = componentesConexas(g);
     cout << "Componentes conexas: " << componentes.size() << "\n";
-    // TODO: tamaño de la más grande y ciudades que quedan fuera de ella
 
     cout << "\n=== Ejercicio 2 ===\n";
     vector<vector<int>> dist = distanciasTodosConTodos(g);
@@ -772,13 +788,39 @@ int main(int argc, char* argv[]) {
 
     cout << "\n=== Ejercicio 4 ===\n";
     Diametro d = diametro(g, dist);
-    cout << "Diámetro: " << d.distancia << " km, entre " << d.ciudad1 << " y "
-              << d.ciudad2 << "\n";
+    cout << "Diámetro: " << d.distancia << " km, entre "  << d.ciudad1 << " y " << d.ciudad2 << "\n";
 
     cout << "\n=== Ejercicio 5 ===\n";
     Visitas visitas = randomWalks(g, 10000, 100);
     Visitas visitasPorDistancia = randomWalksPorDistancia(g, 10000, 100);
-    // TODO: las 10 ciudades más visitadas en cada caso, y las 10 de mayor grado
+    
+    vector<pair<string, int>> rankingNormal;
+    vector<pair<string, int>> rankingDistancia;
+    vector<pair<string, int>> rankingGrados;
+
+    for (const auto& par : visitas) {
+        rankingNormal.push_back(par);
+    }
+
+    for (const auto& par : visitasPorDistancia) {
+        rankingDistancia.push_back(par);
+    }
+
+    vector<string> ciudades = g.get_vertices();
+
+    for (int i = 0; i < (int)ciudades.size(); i++) {
+        vector<string> vecinos = g.get_neighbors(ciudades[i]);
+        rankingGrados.push_back({ciudades[i], (int)vecinos.size()});
+    }
+
+    cout << "\nTop 10 random walks normales:\n";
+    mostrarTop10(rankingNormal);
+
+    cout << "\nTop 10 ciudades de mayor grado:\n";
+    mostrarTop10(rankingGrados);
+
+    cout << "\nTop 10 random walks por distancia:\n";
+    mostrarTop10(rankingDistancia);
 
     cout << "\n=== Ejercicio 6 ===\n";
     analisisLibre(g, dist);
