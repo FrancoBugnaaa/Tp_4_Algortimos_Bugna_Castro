@@ -1,11 +1,50 @@
 =======================================================
 EJERCICIO 1: COMPONENTES CONEXAS
 =======================================================
+Para determinar la cantidad de componentes conexas del grafo, utilizamos el algoritmo DFS.
 
+Nuestro algoritmo recorre todos los vértices y, cuando encuentra uno que todavía no fue visitado, ejecuta un DFS desde él para identificar todas las ciudades alcanzables y agruparlas dentro de una misma componente conexa.
+
+Para evitar recorrer repetidamente los mismos vértices, utilizamos un vector de booleanos que registra cuáles ya fueron visitados.
+
+1- ¿Cuántas componentes conexas tiene el grafo? ¿Cuál es el tamaño de la más grande?
+
+Según los resultados obtenidos, el grafo tiene 4 componentes conexas, de las cuales la mayor está formada por 272 ciudades, sobre un total de 279.
+
+2- ¿Qué ciudades quedan fuera de ella?
+
+Las 7 ciudades que quedan fuera de la componente mayor son:
+
+- Río Grande
+- Tolhuin
+- Ushuaia
+- Puerto Argentino
+- Puerto Darwin
+- Bahía Zorro
+- Martín García
+
+Estas ciudades pertenecen a las siguientes componentes:
+
+Componente 2: Río Grande, Tolhuin y Ushuaia.
+
+Componente 3: Puerto Argentino, Puerto Darwin y Bahía Zorro.
+
+Componente 4: Martín García.
+
+3- ¿Tiene sentido, mirando un mapa?
+
+Sí, consideramos que la distribución de las componentes conexas tiene sentido geográficamente.
+
+Las ciudades que quedan fuera de la componente principal se encuentran en territorios insulares, separados del territorio continental argentino.
+
+En particular, las ciudades de Tierra del Fuego se encuentran separadas del continente por el estrecho de Magallanes y requieren atravesar territorio chileno para acceder por carretera.
+
+Por otro lado, Puerto Argentino, Puerto Darwin y Bahía Zorro se encuentran en las Islas Malvinas, mientras que Martín García es una isla ubicada en el Río de la Plata.
+
+Por lo tanto, resulta razonable que estas ciudades formen componentes independientes dentro del grafo proporcionado, dado que no se incluyeron conexiones que las unan con la componente continental.
 =======================================================
 EJERCICIO 2: CAMINO MÍNIMO CON PESOS DE TODOS CON TODOS
 =======================================================
-
 1- ¿Qué algoritmo usaron? ¿Qué orden tiene calcular todas las distancias?
 
 El algoritmo que implementamos fue el de Dijkstra dado que, la distancia entre las ciudades (pesos de las aristas del grafo) no es negativa, dicho
@@ -40,8 +79,33 @@ conexa distinta (esto se puede confirmar analizando los resultados del ejercicio
 siete ciudades fuera de la componente mayor, en la cual sí se encuentra Buenos Aires).
 
 =======================================================
-EJERCICIO 3: TRIANGULOS
+EJERCICIO 3: TRIÁNGULOS
 =======================================================
+1- ¿Cuántos triángulos tiene el grafo?
+
+Para calcular la cantidad de triángulos, implementamos un algoritmo que recorre todas las combinaciones posibles de tres ciudades distintas.
+
+Un triángulo se forma cuando tres vértices están conectados entre sí, es decir, cuando existen las aristas entre los tres pares de ciudades seleccionadas.
+
+Para comprobarlo, utilizamos tres ciclos for anidados y la función edge_exists(), que permite verificar si existe una conexión entre dos vértices.
+
+Además, establecimos que los índices cumplan la condición i < j < k. De esta manera, evitamos contar varias veces un mismo triángulo, asegurándonos de que cada combinación de tres ciudades sea analizada una sola vez.
+
+Según los resultados obtenidos, el grafo tiene un total de **2281 triángulos**.
+
+2- ¿Qué orden tiene el algoritmo?
+
+La complejidad temporal de nuestro algoritmo es O(n³), debido a que utilizamos tres ciclos for anidados para recorrer las posibles combinaciones de tres vértices.
+
+Aunque los ciclos no recorren exactamente n posiciones cada uno, la cantidad de combinaciones posibles es:
+
+C(n,3) = n(n-1)(n-2) / 6
+
+Por lo tanto, el término dominante es n³.
+
+Además, las consultas realizadas mediante edge_exists() tienen una complejidad O(1) en promedio gracias a la implementación mediante unordered_map.
+
+En consecuencia, la complejidad temporal total del algoritmo es O(n³).
 
 ===============================
 EJERCICIO 4: DIÁMETRO CON PESOS
@@ -60,6 +124,98 @@ las cuales nos indican que no existe camino posible (en el grafo "g") para unir 
 EJERCICIO 5: RANDOM WALKS Y LA CIUDAD MÁS CENTRAL
 =======================================================
 
+Para analizar la centralidad de las ciudades del grafo implementamos el algoritmo Random Walk, que consiste en realizar recorridos aleatorios y contar cuántas veces se visita cada vértice.
+
+En nuestro caso, realizamos 10.000 recorridos aleatorios de 100 pasos cada uno.
+
+Cada recorrido comienza en una ciudad elegida al azar y, posteriormente, se mueve entre sus vecinos. Las visitas se registran mediante un unordered_map que asocia cada ciudad con su cantidad de apariciones.
+
+1- ¿Cuáles son las 10 ciudades más centrales según este criterio?
+
+Los resultados obtenidos fueron:
+
+1. Aguilares: 5495 visitas.
+2. Alta Gracia: 5330 visitas.
+3. Cutral Có: 5066 visitas.
+4. Villa General Belgrano: 4797 visitas.
+5. San Pedro de Jujuy: 4786 visitas.
+6. Palpalá: 4785 visitas.
+7. General San Martín (Chaco): 4783 visitas.
+8. Purmamarca: 4764 visitas.
+9. San Martín (Mendoza): 4695 visitas.
+10. Concepción: 4681 visitas.
+
+Podemos observar que Aguilares fue la ciudad más visitada, seguida por Alta Gracia y Cutral Có.
+
+Según este criterio, estas ciudades se consideran las más centrales, ya que los recorridos aleatorios pasan por ellas con mayor frecuencia.
+
+2- Compárenlas con las 10 ciudades de mayor grado. ¿Qué observan? ¿Por qué creen que pasa?
+
+Para realizar esta comparación calculamos el grado de cada ciudad, es decir, la cantidad de vecinos con los que se encuentra conectada directamente.
+
+Los resultados obtenidos fueron:
+
+1. Alta Gracia: grado 15.
+2. Aguilares: grado 15.
+3. Villa General Belgrano: grado 13.
+4. Cutral Có: grado 13.
+5. Purmamarca: grado 13.
+6. Libertador General San Martín: grado 13.
+7. San Pedro de Jujuy: grado 13.
+8. Palpalá: grado 13.
+9. Concepción: grado 13.
+10. Mina Clavero: grado 13.
+
+Al comparar ambos rankings, observamos que 8 de las 10 ciudades más visitadas mediante Random Walk también aparecen entre las 10 ciudades de mayor grado.
+
+Esto demuestra una relación importante entre la cantidad de conexiones de una ciudad y la frecuencia con la que es visitada.
+
+Consideramos que esto ocurre porque las ciudades de mayor grado tienen más conexiones con otros vértices, por lo que existen más posibilidades de llegar a ellas durante los recorridos aleatorios.
+
+Además, en un grafo no dirigido, los recorridos aleatorios suficientemente largos tienden a visitar los vértices con una frecuencia proporcional a sus grados, dentro de cada componente conexa.
+
+Sin embargo, los rankings no coinciden completamente, debido al carácter aleatorio de los recorridos, su duración finita y la distribución de las conexiones dentro del grafo.
+
+Por lo tanto, concluimos que el grado de una ciudad es un factor importante para determinar su centralidad según este criterio.
+
+3- Cambien el Random Walk para que el vecino se elija con probabilidad inversamente proporcional a la distancia. ¿Cambia el resultado?
+
+Para resolver esta parte modificamos nuestro algoritmo para que la probabilidad de seleccionar un vecino fuera inversamente proporcional a la distancia de la ruta.
+
+Para ello, asignamos a cada conexión un peso calculado como:
+
+peso = 1 / distancia
+
+Luego utilizamos discrete_distribution para seleccionar aleatoriamente el próximo vecino considerando dichos pesos.
+
+De esta manera, las rutas más cortas tienen una mayor probabilidad de ser elegidas que las rutas largas.
+
+Los resultados obtenidos fueron:
+
+1. Viedma: 18560 visitas.
+2. Carmen de Patagones: 18367 visitas.
+3. Cipolletti: 8655 visitas.
+4. Neuquén: 8592 visitas.
+5. Villa Carlos Paz: 7614 visitas.
+6. Concepción: 7562 visitas.
+7. Cosquín: 7528 visitas.
+8. Alta Gracia: 7409 visitas.
+9. Aguilares: 7345 visitas.
+10. Palpalá: 7267 visitas.
+
+Al comparar estos resultados con los del Random Walk original, observamos cambios significativos en el ranking.
+
+En particular, Viedma y Carmen de Patagones pasan a ocupar los dos primeros puestos, con una cantidad de visitas considerablemente mayor que las demás ciudades.
+
+Esto puede explicarse porque las conexiones cortas entre ciudades cercanas favorecen los movimientos repetidos entre determinados vértices.
+
+Además, solamente 4 ciudades aparecen en ambos rankings: Concepción, Alta Gracia, Aguilares y Palpalá.
+
+Por lo tanto, concluimos que considerar las distancias de las rutas modifica significativamente los resultados de centralidad.
+
+Mientras que el Random Walk original se relaciona principalmente con la cantidad de conexiones de cada ciudad, el segundo también considera la longitud de las rutas, favoreciendo aquellas de menor distancia.
+
+En conclusión, la centralidad de una ciudad depende del criterio utilizado para analizar el grafo.
 ============================
 EJERCICIO 6: ANÁLISIS LIBRE
 ============================
