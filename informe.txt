@@ -42,9 +42,11 @@ En particular, las ciudades de Tierra del Fuego se encuentran separadas del cont
 Por otro lado, Puerto Argentino, Puerto Darwin y Bahía Zorro se encuentran en las Islas Malvinas, mientras que Martín García es una isla ubicada en el Río de la Plata.
 
 Por lo tanto, resulta razonable que estas ciudades formen componentes independientes dentro del grafo proporcionado, dado que no se incluyeron conexiones que las unan con la componente continental.
+
 =======================================================
 EJERCICIO 2: CAMINO MÍNIMO CON PESOS DE TODOS CON TODOS
 =======================================================
+
 1- ¿Qué algoritmo usaron? ¿Qué orden tiene calcular todas las distancias?
 
 El algoritmo que implementamos fue el de Dijkstra dado que, la distancia entre las ciudades (pesos de las aristas del grafo) no es negativa, dicho
@@ -81,6 +83,7 @@ siete ciudades fuera de la componente mayor, en la cual sí se encuentra Buenos 
 =======================================================
 EJERCICIO 3: TRIÁNGULOS
 =======================================================
+
 1- ¿Cuántos triángulos tiene el grafo?
 
 Para calcular la cantidad de triángulos, implementamos un algoritmo que recorre todas las combinaciones posibles de tres ciudades distintas.
@@ -91,7 +94,7 @@ Para comprobarlo, utilizamos tres ciclos for anidados y la función edge_exists(
 
 Además, establecimos que los índices cumplan la condición i < j < k. De esta manera, evitamos contar varias veces un mismo triángulo, asegurándonos de que cada combinación de tres ciudades sea analizada una sola vez.
 
-Según los resultados obtenidos, el grafo tiene un total de **2281 triángulos**.
+Según los resultados obtenidos, el grafo tiene un total de 2281 triángulos.
 
 2- ¿Qué orden tiene el algoritmo?
 
@@ -216,6 +219,7 @@ Por lo tanto, concluimos que considerar las distancias de las rutas modifica sig
 Mientras que el Random Walk original se relaciona principalmente con la cantidad de conexiones de cada ciudad, el segundo también considera la longitud de las rutas, favoreciendo aquellas de menor distancia.
 
 En conclusión, la centralidad de una ciudad depende del criterio utilizado para analizar el grafo.
+
 ============================
 EJERCICIO 6: ANÁLISIS LIBRE
 ============================

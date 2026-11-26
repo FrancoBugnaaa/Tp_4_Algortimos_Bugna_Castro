@@ -589,8 +589,8 @@ void analisisLibre(const GrafoCiudades& g, const vector<vector<int>>& dist) {
     for (const string& ciudad : vertices) {
         size_t grado = g.get_neighbors(ciudad).size();
 
-        if (grado < menor_grado) {
-            menor_grado = grado;
+        if (grado < menor_grado) {  // Dado que para determinar el menor grado utilizamos un < exclusivo, si dos ciudades tienen el mismo grado
+            menor_grado = grado;    // simplemente nos quedamos con la primera de ellas que haya aparecido.
             ciudad_mas_aislada = ciudad;
         }
     }
@@ -606,8 +606,8 @@ void analisisLibre(const GrafoCiudades& g, const vector<vector<int>>& dist) {
     for (const string& ciudad : vertices) {
         size_t grado = g.get_neighbors(ciudad).size();
 
-        if (grado > mayor_grado) {
-            mayor_grado = grado;
+        if (grado > mayor_grado) {  // Debido a que para determinar el mayor grado implementamos una comparación > exclusiva, si dos ciudades tienen
+            mayor_grado = grado;    // el mismo grado simplemente nos quedamos con la primera de ellas que haya aparecido antes.
             ciudad_mas_conectada = ciudad;
         }
     }
